@@ -14,6 +14,7 @@ public class PlaneController : MonoBehaviour {
 
     Rigidbody rb;
     Animator anim;
+    Vector3 movDir;
 
     float lastShot = 0, rotationDir = 0;
 
@@ -23,6 +24,7 @@ public class PlaneController : MonoBehaviour {
         anim = GetComponent<Animator>();
         
         currentHealth = maxHealth;
+        movDir = -transform.position;
     }
 
     private void Start()
@@ -42,13 +44,14 @@ public class PlaneController : MonoBehaviour {
         Vector3 rot = transform.localRotation.eulerAngles;
         rot.z = rotationDir * rotation;
         transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(rot), 0.1f);
-        transform.Rotate(0, rotationDir * 2, 0, Space.World);
+        transform.forward = Vector3.RotateTowards(transform.forward, -movDir, 0.1f, 0.1f);
         rb.AddForce(-transform.forward * planeSpeed, ForceMode.VelocityChange);
         rb.velocity = Vector3.ClampMagnitude(rb.velocity, planeSpeed);
     }
 
     public void Move(float x, float z)
     {
+        movDir = new Vector3(x, 0, z).normalized;
         rotationDir = x;
     }
 
