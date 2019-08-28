@@ -37,19 +37,19 @@ public class MobileController : MonoBehaviour {
     {
 
         if (SimpleInput.GetAxis("Horizontal") != 0)
-            SendMovementInfo(SimpleInput.GetAxis("Horizontal"));
+            SendMovementInfo(SimpleInput.GetAxis("Horizontal"), SimpleInput.GetAxis("Vertical"));
         if (SimpleInput.GetAxis("Fire") > 0)
             SendShootingInfo();
 
     }
 
-    static public void SendMovementInfo(float x)
+    static public void SendMovementInfo(float x, float y)
     {
         if (client.isConnected)
         {
             StringMessage msg = new StringMessage
             {
-                value = x.ToString()
+                value = x + "|" + y
             };
             client.Send(888, msg);
         }

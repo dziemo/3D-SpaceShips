@@ -47,7 +47,7 @@ public class PlaneController : MonoBehaviour {
         rb.velocity = Vector3.ClampMagnitude(rb.velocity, planeSpeed);
     }
 
-    public void Tilt(float x)
+    public void Move(float x, float z)
     {
         rotationDir = x;
     }
