@@ -78,7 +78,9 @@ public class PlaneServer : MonoBehaviour {
             value = message.ReadMessage<StringMessage>().value
         };
 
-        players[message.conn.connectionId].GetComponent<PlaneController>().Tilt(Convert.ToSingle(msg.value));
+        string[] deltas = msg.value.Split('|');
+
+        players[message.conn.connectionId].GetComponent<PlaneController>().Move(Convert.ToSingle(deltas[0]), Convert.ToSingle(deltas[1]));
     }
 
     private void ServerRecieveShootingVector(NetworkMessage message)
