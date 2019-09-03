@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlaneController : MonoBehaviour {
+public class ShipController : MonoBehaviour {
 
     public GameObject bulletPrefab;
     public Transform[] firePositions;
-    public Color planeColor;
+    public Color shipColor;
 
     public int maxHealth = 100, currentHealth;
 
@@ -64,7 +64,7 @@ public class PlaneController : MonoBehaviour {
                 var projectile = Instantiate(bulletPrefab, pos.position, pos.rotation);
                 BulletController bulletController = projectile.AddComponent<BulletController>();
                 bulletController.owner = gameObject;
-                bulletController.SetColor(planeColor);
+                bulletController.SetColor(shipColor);
                 projectile.GetComponent<Rigidbody>().AddForce(-projectile.transform.up * bulletSpeed, ForceMode.VelocityChange);
                 Destroy(projectile, 5.0f);
                 lastShot = fireRate;
@@ -75,13 +75,13 @@ public class PlaneController : MonoBehaviour {
     public void SetColor()
     {
         //KenPlanes code
-        Color darkerColor = new Color(planeColor.r * 0.85f, planeColor.g * 0.85f, planeColor.b * 0.85f);
+        Color darkerColor = new Color(shipColor.r * 0.85f, shipColor.g * 0.85f, shipColor.b * 0.85f);
         
         foreach (Renderer renderer in transform.GetComponentsInChildren<Renderer>())
         {
             foreach (Material m in renderer.materials)
             {
-                if (m.name.Contains("ship")) { m.SetColor("_Color", planeColor); }
+                if (m.name.Contains("ship")) { m.SetColor("_Color", shipColor); }
                 if (m.name.Contains("shipDark")) { m.SetColor("_Color", darkerColor); }
             }
         }
@@ -92,7 +92,7 @@ public class PlaneController : MonoBehaviour {
         currentHealth -= amount;
         if (currentHealth <= 0)
         {
-            var explosion = Instantiate(PlaneServer.instance.explosionParticle, transform.position, transform.rotation);
+            var explosion = Instantiate(ServerController.instance.explosionParticle, transform.position, transform.rotation);
             Destroy(explosion, 2.0f);
             Destroy(gameObject);
         }

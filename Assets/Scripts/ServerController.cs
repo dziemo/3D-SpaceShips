@@ -4,13 +4,13 @@ using UnityEngine;
 using UnityEngine.Networking.NetworkSystem;
 using UnityEngine.Networking;
 using System;
-using Random = UnityEngine.Random;
 
-public class PlaneServer : MonoBehaviour {
+public class ServerController : MonoBehaviour {
 
-    public static PlaneServer instance;
+    public static ServerController instance;
 
-    public GameObject plane;
+    public GameObject ship;
+    public Dictionary<int, ShipController> shipControllers = new Dictionary<int, ShipController>();
     public List<Transform> spawns;
     public List<Color> playersColors;
     public Dictionary<int, GameObject> players = new Dictionary<int, GameObject>();
@@ -42,19 +42,14 @@ public class PlaneServer : MonoBehaviour {
 
     public void OnConnected(NetworkMessage netMsg)
     {
-        var newPlayer = Instantiate(plane, spawns[players.Count].position, Quaternion.identity);
+        var newPlayer = Instantiate(ship, spawns[players.Count].position, Quaternion.identity);
         players.Add(netMsg.conn.connectionId, newPlayer);
-        
-        if (players.Count == 0)
-            newPlayer.GetComponent<PlaneController>().planeColor = playersColors[0];
-        else if (players.Count == 1)
-            newPlayer.GetComponent<PlaneController>().planeColor = playersColors[1];
-        else if (players.Count == 2)
-            newPlayer.GetComponent<PlaneController>().planeColor = playersColors[2];
-        else if (players.Count == 3)
-            newPlayer.GetComponent<PlaneController>().planeColor = playersColors[3];
 
-        newPlayer.GetComponent<PlaneController>().SetColor();
+        shipControllers.Add(netMsg.conn.connectionId, newPlayer.GetComponent<ShipController>());
+
+        newPlayer.GetComponent<ShipController>().shipColor = playersColors[players.Count];
+
+        newPlayer.GetComponent<ShipController>().SetColor();
 
         Debug.Log("Client Connected");
         if (players.Count == 4)
@@ -80,11 +75,11 @@ public class PlaneServer : MonoBehaviour {
 
         string[] deltas = msg.value.Split('|');
 
-        players[message.conn.connectionId].GetComponent<PlaneController>().Move(Convert.ToSingle(deltas[0]), Convert.ToSingle(deltas[1]));
+        shipControllers[message.conn.connectionId].Move(Convert.ToSingle(deltas[0]), Convert.ToSingle(deltas[1]));
     }
 
     private void ServerRecieveShootingVector(NetworkMessage message)
     {
-        players[message.conn.connectionId].GetComponent<PlaneController>().Shoot();
+        shipControllers[message.conn.connectionId].Shoot();
     }
 }

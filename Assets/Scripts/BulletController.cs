@@ -21,8 +21,8 @@ public class BulletController : MonoBehaviour {
         {
             if (coll != owner)
             {
-                coll.GetComponent<PlaneController>().TakeDamage(10);
-                var hit = Instantiate(PlaneServer.instance.hitParticle, transform.position, transform.rotation);
+                coll.GetComponent<ShipController>().TakeDamage(10);
+                var hit = Instantiate(ServerController.instance.hitParticle, transform.position, transform.rotation);
                 Destroy(hit, hit.GetComponent<ParticleSystem>().main.startLifetime.constant);
                 Destroy(gameObject);
             }
