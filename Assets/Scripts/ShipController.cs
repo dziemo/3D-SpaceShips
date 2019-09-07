@@ -22,9 +22,8 @@ public class ShipController : MonoBehaviour {
     {
         rb = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
-        
-        currentHealth = maxHealth;
-        movDir = -transform.position;
+
+        ResetShip();
     }
 
     private void Start()
@@ -44,7 +43,7 @@ public class ShipController : MonoBehaviour {
         Vector3 rot = transform.localRotation.eulerAngles;
         rot.z = rotationDir * rotation;
         transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(rot), 0.1f);
-        transform.forward = Vector3.RotateTowards(transform.forward, -movDir, 0.1f, 0.1f);
+        transform.forward = Vector3.RotateTowards(transform.forward, -movDir, 0.05f, 0.05f);
         rb.AddForce(-transform.forward * planeSpeed, ForceMode.VelocityChange);
         rb.velocity = Vector3.ClampMagnitude(rb.velocity, planeSpeed);
     }
@@ -87,14 +86,17 @@ public class ShipController : MonoBehaviour {
         }
     }
 
-    public void TakeDamage (int amount)
+    public void TakeDamage (int amount, GameObject owner)
     {
         currentHealth -= amount;
+        ServerController.instance.AddDamageStats(owner, amount);
         if (currentHealth <= 0)
         {
             var explosion = Instantiate(ServerController.instance.explosionParticle, transform.position, transform.rotation);
             Destroy(explosion, 2.0f);
-            Destroy(gameObject);
+            ServerController.instance.AddKill(owner);
+            ServerController.instance.Respawn(gameObject);
+            //Destroy(gameObject);
         }
     }
 
@@ -105,5 +107,13 @@ public class ShipController : MonoBehaviour {
         {
             currentHealth = maxHealth;
         }
+    }
+
+    public void ResetShip()
+    {
+        rb.velocity = Vector3.zero;
+        currentHealth = maxHealth;
+        movDir = -transform.position;
+        transform.forward = -movDir;
     }
 }

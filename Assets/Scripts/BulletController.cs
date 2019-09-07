@@ -21,7 +21,7 @@ public class BulletController : MonoBehaviour {
         {
             if (coll != owner)
             {
-                coll.GetComponent<ShipController>().TakeDamage(10);
+                coll.GetComponent<ShipController>().TakeDamage(50, owner);
                 var hit = Instantiate(ServerController.instance.hitParticle, transform.position, transform.rotation);
                 Destroy(hit, hit.GetComponent<ParticleSystem>().main.startLifetime.constant);
                 Destroy(gameObject);

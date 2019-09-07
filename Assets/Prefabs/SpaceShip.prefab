@@ -1060,7 +1060,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 68
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!65 &65691589145996012
 BoxCollider:
@@ -1462,10 +1462,10 @@ MonoBehaviour:
   firePositions:
   - {fileID: 4247472831368276}
   - {fileID: 4598661280527668}
-  planeColor: {r: 0.6838235, g: 0.6838235, b: 0.6838235, a: 1}
+  shipColor: {r: 0, g: 0, b: 0, a: 0}
   maxHealth: 100
   currentHealth: 0
-  planeSpeed: 40
-  bulletSpeed: 500
-  fireRate: 0.25
+  planeSpeed: 0
+  bulletSpeed: 700
+  fireRate: 0.3
   rotation: 60
