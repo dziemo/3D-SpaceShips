@@ -14,9 +14,10 @@ public class ShipController : MonoBehaviour {
 
     Rigidbody rb;
     Animator anim;
-    Vector3 movDir;
+    Vector3 movDir, disableRotDir;
 
-    float lastShot = 0, rotationDir = 0;
+    float lastShot = 0, rotationDir = 0, disableTimer = 0;
+    bool disabled = false;
 
     private void Awake()
     {
@@ -39,13 +40,25 @@ public class ShipController : MonoBehaviour {
 
         if (lastShot > 0)
             lastShot -= Time.deltaTime;
+        if (!disabled)
+        {
+            Vector3 rot = transform.localRotation.eulerAngles;
+            rot.z = rotationDir * rotation;
+            transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(rot), 0.1f);
+            transform.forward = Vector3.RotateTowards(transform.forward, -movDir, 0.05f, 0.05f);
+            rb.AddForce(-transform.forward * planeSpeed, ForceMode.VelocityChange);
+            rb.velocity = Vector3.ClampMagnitude(rb.velocity, planeSpeed);
+        } else
+        {
+            disableTimer -= Time.deltaTime;
+            transform.forward = Vector3.RotateTowards(transform.forward, disableRotDir, 0.015f, 0.015f);
 
-        Vector3 rot = transform.localRotation.eulerAngles;
-        rot.z = rotationDir * rotation;
-        transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(rot), 0.1f);
-        transform.forward = Vector3.RotateTowards(transform.forward, -movDir, 0.05f, 0.05f);
-        rb.AddForce(-transform.forward * planeSpeed, ForceMode.VelocityChange);
-        rb.velocity = Vector3.ClampMagnitude(rb.velocity, planeSpeed);
+            if (disableTimer <= 0)
+            {
+                disabled = false;
+                movDir = -transform.forward;
+            }
+        }
     }
 
     public void Move(float x, float z)
@@ -96,7 +109,6 @@ public class ShipController : MonoBehaviour {
             Destroy(explosion, 2.0f);
             ServerController.instance.AddKill(owner);
             ServerController.instance.Respawn(gameObject);
-            //Destroy(gameObject);
         }
     }
 
@@ -115,5 +127,20 @@ public class ShipController : MonoBehaviour {
         currentHealth = maxHealth;
         movDir = -transform.position;
         transform.forward = -movDir;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.transform.root.tag == "Player")
+        {
+            if (!disabled)
+            {
+                disabled = true;
+                disableTimer = 2.0f;
+                disableRotDir = transform.right * Random.Range(-1, 2);
+                rb.velocity = Vector3.zero;
+                rb.AddForce((transform.position - collision.gameObject.transform.position).normalized * 30.0f, ForceMode.VelocityChange);
+            }
+        }
     }
 }

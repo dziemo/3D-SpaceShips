@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -26,6 +27,7 @@ public class MobileController : MonoBehaviour {
     void Start()
     {
         client = new NetworkClient();
+        NetworkServer.RegisterHandler(MsgType.Highest + 1, SetPlayerColor);
     }
 
     public void Connect()
@@ -51,7 +53,7 @@ public class MobileController : MonoBehaviour {
             {
                 value = x + "|" + y
             };
-            client.Send(888, msg);
+            client.Send(MsgType.Highest + 1, msg);
         }
     }
 
@@ -59,7 +61,19 @@ public class MobileController : MonoBehaviour {
     {
         if (client.isConnected)
         {
-            client.Send(999, new EmptyMessage());
+            client.Send(MsgType.Highest + 2, new EmptyMessage());
         }
+    }
+    
+    private void SetPlayerColor(NetworkMessage message)
+    {
+        StringMessage msg = new StringMessage
+        {
+            value = message.ReadMessage<StringMessage>().value
+        };
+
+        string[] rgb = msg.value.Split('|');
+
+        Camera.main.backgroundColor = new Color(Convert.ToSingle(rgb[0]), Convert.ToSingle(rgb[1]), Convert.ToSingle(rgb[2]));
     }
 }

@@ -43,8 +43,8 @@ public class ServerController : MonoBehaviour {
     void Start()
     {
         NetworkServer.Listen(25000);
-        NetworkServer.RegisterHandler(888, ServerRecieveMovementVector);
-        NetworkServer.RegisterHandler(999, ServerRecieveShootingVector);
+        NetworkServer.RegisterHandler(MsgType.Highest + 1, ServerRecieveMovementVector);
+        NetworkServer.RegisterHandler(MsgType.Highest + 2, ServerRecieveShootingVector);
         NetworkServer.RegisterHandler(MsgType.Connect, OnConnected);
         NetworkServer.RegisterHandler(MsgType.Disconnect, OnDisconnected);
         NetworkServer.RegisterHandler(MsgType.Error, OnError);
@@ -57,9 +57,16 @@ public class ServerController : MonoBehaviour {
         newPlayer.lives = 3;
         newPlayer.playerName = "Player " + (networkPlayers.Count + 1);
         newPlayer.playerShip = newShip;
-        newShip.GetComponent<ShipController>().shipColor = playersColors[networkPlayers.Count];
+        Color playerColor = playersColors[networkPlayers.Count];
+        newShip.GetComponent<ShipController>().shipColor = playerColor;
         newShip.GetComponent<ShipController>().SetColor();
         playersUISets[networkPlayers.Count].SetActive(true);
+        StringMessage msg = new StringMessage
+        {
+            value = playerColor.r.ToString() + '|' + playerColor.g.ToString() + '|' + playerColor.b.ToString()
+        };
+        NetworkServer.SendToClient(netMsg.conn.connectionId, MsgType.Highest + 1, msg);
+
         networkPlayers.Add(netMsg.conn.connectionId, newPlayer);
 
         localPlayers.Add(newPlayer);

@@ -1462,10 +1462,10 @@ MonoBehaviour:
   firePositions:
   - {fileID: 4247472831368276}
   - {fileID: 4598661280527668}
-  shipColor: {r: 0, g: 0, b: 0, a: 0}
+  shipColor: {r: 0.7568628, g: 0.7568628, b: 0.7568628, a: 0}
   maxHealth: 100
   currentHealth: 0
-  planeSpeed: 0
+  planeSpeed: 70
   bulletSpeed: 700
   fireRate: 0.3
   rotation: 60
