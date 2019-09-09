@@ -27,7 +27,7 @@ public class MobileController : MonoBehaviour {
     void Start()
     {
         client = new NetworkClient();
-        NetworkServer.RegisterHandler(MsgType.Highest + 1, SetPlayerColor);
+        client.RegisterHandler(MsgType.Highest + 1, SetPlayerColor);
     }
 
     public void Connect()
@@ -73,7 +73,7 @@ public class MobileController : MonoBehaviour {
         };
 
         string[] rgb = msg.value.Split('|');
-
+        
         Camera.main.backgroundColor = new Color(Convert.ToSingle(rgb[0]), Convert.ToSingle(rgb[1]), Convert.ToSingle(rgb[2]));
     }
 }

@@ -21,6 +21,8 @@ public class ServerController : MonoBehaviour {
     public List<GameObject> playersUISets = new List<GameObject>();
     public List<Text> killsText = new List<Text>();
 
+    public Text countdownText;
+
     public GameObject explosionParticle, hitParticle;
 
     private void OnGUI()
@@ -48,6 +50,7 @@ public class ServerController : MonoBehaviour {
         NetworkServer.RegisterHandler(MsgType.Connect, OnConnected);
         NetworkServer.RegisterHandler(MsgType.Disconnect, OnDisconnected);
         NetworkServer.RegisterHandler(MsgType.Error, OnError);
+        Time.timeScale = 0.0f;
     }
 
     public void OnConnected(NetworkMessage netMsg)
@@ -57,25 +60,32 @@ public class ServerController : MonoBehaviour {
         newPlayer.lives = 3;
         newPlayer.playerName = "Player " + (networkPlayers.Count + 1);
         newPlayer.playerShip = newShip;
+
         Color playerColor = playersColors[networkPlayers.Count];
-        newShip.GetComponent<ShipController>().shipColor = playerColor;
-        newShip.GetComponent<ShipController>().SetColor();
+
+        ShipController shipController = newShip.GetComponent<ShipController>();
+        shipController.enabled = false;
+        shipController.shipColor = playerColor;
+        shipController.SetColor();
         playersUISets[networkPlayers.Count].SetActive(true);
         StringMessage msg = new StringMessage
         {
             value = playerColor.r.ToString() + '|' + playerColor.g.ToString() + '|' + playerColor.b.ToString()
         };
+        Debug.Log("Color string:  " + msg.value);
         NetworkServer.SendToClient(netMsg.conn.connectionId, MsgType.Highest + 1, msg);
 
         networkPlayers.Add(netMsg.conn.connectionId, newPlayer);
 
         localPlayers.Add(newPlayer);
 
-        shipControllers.Add(netMsg.conn.connectionId, newShip.GetComponent<ShipController>());
+        shipControllers.Add(netMsg.conn.connectionId, shipController);
         
         Debug.Log("Client Connected");
         if (networkPlayers.Count == 4)
             NetworkServer.dontListen = true;
+
+        StartCoroutine(StartGameCountdown());
     }
 
     public void OnDisconnected(NetworkMessage netMsg)
@@ -136,6 +146,40 @@ public class ServerController : MonoBehaviour {
         playerObject.transform.position = spawns[Random.Range(0, 4)].transform.position;
         playerObject.GetComponent<ShipController>().ResetShip();
         playerObject.SetActive(true);
+    }
+
+    IEnumerator StartGameCountdown ()
+    {
+        countdownText.gameObject.SetActive(true);
+        int counter = 5;
+        countdownText.text = counter.ToString();
+        while (counter > 0)
+        {
+            yield return WaitForUnscaledSeconds(1.0f);
+            counter--;
+            countdownText.text = counter.ToString();
+        }
+        Time.timeScale = 1.0f;
+        countdownText.text = "GO!";
+        yield return WaitForUnscaledSeconds(0.5f);
+        countdownText.gameObject.SetActive(false);
+
+        NetworkServer.dontListen = true;
+
+        foreach (ShipController controller in shipControllers.Values)
+        {
+            controller.enabled = true;
+        }
+    }
+
+    IEnumerator WaitForUnscaledSeconds(float dur)
+    {
+        var cur = 0f;
+        while (cur < dur)
+        {
+            yield return null;
+            cur += Time.unscaledDeltaTime;
+        }
     }
 
     private void UpdateUI ()

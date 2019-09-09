@@ -69,7 +69,7 @@ public class ShipController : MonoBehaviour {
 
     public void Shoot()
     {
-        if (lastShot <= 0)
+        if (lastShot <= 0 && !disabled)
         {
             foreach(Transform pos in firePositions)
             {
@@ -137,7 +137,8 @@ public class ShipController : MonoBehaviour {
             {
                 disabled = true;
                 disableTimer = 2.0f;
-                disableRotDir = transform.right * Random.Range(-1, 2);
+                int[] vals = new int[] { 1, -1 }; 
+                disableRotDir = transform.right * vals[Random.Range(0, 2)];
                 rb.velocity = Vector3.zero;
                 rb.AddForce((transform.position - collision.gameObject.transform.position).normalized * 30.0f, ForceMode.VelocityChange);
             }
