@@ -240,7 +240,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1684233374709940
 GameObject:
   m_ObjectHideFlags: 1
@@ -516,7 +516,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1443511387311402}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 3.8203125, y: -4.5139647, z: -15.532049}
+  m_LocalPosition: {x: 1.34, y: -4.51, z: -18.84}
   m_LocalScale: {x: 0.1, y: 1, z: 0.10000006}
   m_Children:
   - {fileID: 4247472831368276}
@@ -1461,11 +1461,11 @@ MonoBehaviour:
     type: 2}
   firePositions:
   - {fileID: 4247472831368276}
-  - {fileID: 4598661280527668}
   shipColor: {r: 0.7568628, g: 0.7568628, b: 0.7568628, a: 0}
   maxHealth: 100
   currentHealth: 0
-  planeSpeed: 70
-  bulletSpeed: 700
-  fireRate: 0.3
+  damage: 10
+  planeSpeed: 75
+  bulletSpeed: 800
+  fireRate: 0.2
   rotation: 60

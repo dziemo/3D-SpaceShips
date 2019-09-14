@@ -5,6 +5,7 @@ using UnityEngine;
 public class BulletController : MonoBehaviour {
 
     public GameObject owner;
+    public int damage;
 
     private void Update()
     {
@@ -21,11 +22,15 @@ public class BulletController : MonoBehaviour {
         {
             if (coll != owner)
             {
-                coll.GetComponent<ShipController>().TakeDamage(50, owner);
+                coll.GetComponent<ShipController>().TakeDamage(damage, owner);
                 var hit = Instantiate(ServerController.instance.hitParticle, transform.position, transform.rotation);
                 Destroy(hit, hit.GetComponent<ParticleSystem>().main.startLifetime.constant);
                 Destroy(gameObject);
             }
+        } else if (coll.tag =="Asteroid")
+        {
+            coll.GetComponent<AsteroidController>().hitPoints--;
+            Destroy(gameObject);
         }
     }
 

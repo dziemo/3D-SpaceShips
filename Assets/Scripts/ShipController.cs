@@ -8,15 +8,16 @@ public class ShipController : MonoBehaviour {
     public Transform[] firePositions;
     public Color shipColor;
 
-    public int maxHealth = 100, currentHealth;
+    public int maxHealth = 100, currentHealth, damage = 10;
 
-    public float planeSpeed = 0.01f, bulletSpeed = 20.0f, fireRate = 0.3f, rotation = 60.0f;
+    public float planeSpeed = 0.01f, bulletSpeed = 20.0f, fireRate = 0.3f, rotation = 60.0f, rotationSpeed = 0.075f;
 
     Rigidbody rb;
     Animator anim;
-    Vector3 movDir, disableRotDir;
+    Vector3 movDir;
 
     float lastShot = 0, rotationDir = 0, disableTimer = 0;
+    int disableRotDir = 0;
     bool disabled = false;
 
     private void Awake()
@@ -32,7 +33,7 @@ public class ShipController : MonoBehaviour {
         SetColor();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         Vector3 yPosCorrection = transform.position;
         yPosCorrection.y = 0;
@@ -45,13 +46,13 @@ public class ShipController : MonoBehaviour {
             Vector3 rot = transform.localRotation.eulerAngles;
             rot.z = rotationDir * rotation;
             transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(rot), 0.1f);
-            transform.forward = Vector3.RotateTowards(transform.forward, -movDir, 0.05f, 0.05f);
+            transform.forward = Vector3.RotateTowards(transform.forward, -movDir, rotationSpeed, rotationSpeed);
             rb.AddForce(-transform.forward * planeSpeed, ForceMode.VelocityChange);
             rb.velocity = Vector3.ClampMagnitude(rb.velocity, planeSpeed);
         } else
         {
             disableTimer -= Time.deltaTime;
-            transform.forward = Vector3.RotateTowards(transform.forward, disableRotDir, 0.015f, 0.015f);
+            transform.forward = Vector3.RotateTowards(transform.forward, disableRotDir * transform.right, 0.02f, 0.02f);
 
             if (disableTimer <= 0)
             {
@@ -69,7 +70,7 @@ public class ShipController : MonoBehaviour {
 
     public void Shoot()
     {
-        if (lastShot <= 0 && !disabled)
+        if (lastShot <= 0 && !disabled && Time.timeScale != 0)
         {
             foreach(Transform pos in firePositions)
             {
@@ -77,6 +78,7 @@ public class ShipController : MonoBehaviour {
                 BulletController bulletController = projectile.AddComponent<BulletController>();
                 bulletController.owner = gameObject;
                 bulletController.SetColor(shipColor);
+                bulletController.damage = damage;
                 projectile.GetComponent<Rigidbody>().AddForce(-projectile.transform.up * bulletSpeed, ForceMode.VelocityChange);
                 Destroy(projectile, 5.0f);
                 lastShot = fireRate;
@@ -111,6 +113,17 @@ public class ShipController : MonoBehaviour {
             ServerController.instance.Respawn(gameObject);
         }
     }
+    
+    public void TakeDamage(int amount)
+    {
+        currentHealth -= amount;
+        if (currentHealth <= 0)
+        {
+            var explosion = Instantiate(ServerController.instance.explosionParticle, transform.position, transform.rotation);
+            Destroy(explosion, 2.0f);
+            ServerController.instance.Respawn(gameObject);
+        }
+    }
 
     public void Heal (int amount)
     {
@@ -129,18 +142,23 @@ public class ShipController : MonoBehaviour {
         transform.forward = -movDir;
     }
 
+    public void DisableShip (GameObject coll, float disableDuration)
+    {
+        disabled = true;
+        disableTimer = disableDuration;
+        int[] vals = new int[] { 1, -1 };
+        disableRotDir = vals[Random.Range(0, 2)];
+        rb.velocity = Vector3.zero;
+        rb.AddForce((transform.position - coll.gameObject.transform.position).normalized * 60.0f, ForceMode.VelocityChange);
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.transform.root.tag == "Player")
         {
             if (!disabled)
             {
-                disabled = true;
-                disableTimer = 2.0f;
-                int[] vals = new int[] { 1, -1 }; 
-                disableRotDir = transform.right * vals[Random.Range(0, 2)];
-                rb.velocity = Vector3.zero;
-                rb.AddForce((transform.position - collision.gameObject.transform.position).normalized * 30.0f, ForceMode.VelocityChange);
+                DisableShip(collision.gameObject, 2.0f);
             }
         }
     }

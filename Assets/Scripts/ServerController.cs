@@ -11,7 +11,9 @@ public class ServerController : MonoBehaviour {
 
     public static ServerController instance;
 
-    public GameObject ship;
+    public EndPanelController endPanel;
+
+    public GameObject ship, asteroidPrefab;
     public Dictionary<int, ShipController> shipControllers = new Dictionary<int, ShipController>();
     public List<Transform> spawns;
     public List<Color> playersColors;
@@ -50,7 +52,10 @@ public class ServerController : MonoBehaviour {
         NetworkServer.RegisterHandler(MsgType.Connect, OnConnected);
         NetworkServer.RegisterHandler(MsgType.Disconnect, OnDisconnected);
         NetworkServer.RegisterHandler(MsgType.Error, OnError);
+
         Time.timeScale = 0.0f;
+
+        InvokeRepeating("AsteroidSpawn", 0.0f, 15.0f);
     }
 
     public void OnConnected(NetworkMessage netMsg)
@@ -60,6 +65,7 @@ public class ServerController : MonoBehaviour {
         newPlayer.lives = 3;
         newPlayer.playerName = "Player " + (networkPlayers.Count + 1);
         newPlayer.playerShip = newShip;
+        newPlayer.playerLives = playersUISets[networkPlayers.Count].transform.Find("Lives").gameObject;
 
         Color playerColor = playersColors[networkPlayers.Count];
 
@@ -84,7 +90,7 @@ public class ServerController : MonoBehaviour {
         Debug.Log("Client Connected");
         if (networkPlayers.Count == 4)
             NetworkServer.dontListen = true;
-
+        if (networkPlayers.Count == 1)
         StartCoroutine(StartGameCountdown());
     }
 
@@ -137,7 +143,60 @@ public class ServerController : MonoBehaviour {
     public void Respawn (GameObject playerObject)
     {
         playerObject.SetActive(false);
-        StartCoroutine(RespawnCountdown(playerObject));
+        if (localPlayers.Find(p => p.playerShip == playerObject).SubtractLife() > 0)
+        {
+            if (CheckPlayerLives())
+            {
+                StartCoroutine(RespawnCountdown(playerObject));
+            } else
+            {
+                EndGame();
+            }
+        }
+        else
+            Debug.Log("Game over for " + playerObject.name);
+    }
+
+    public bool CheckPlayerLives ()
+    {
+        int playersAlive = 0;
+        foreach (Player p in localPlayers)
+        {
+            if (p.lives > 0)
+                playersAlive++;
+        }
+        if (playersAlive > 1)
+        {
+            return true;
+        } else
+        {
+            return false;
+        }
+    }
+
+    public void EndGame ()
+    {
+        StopAllCoroutines();
+        //Display which player won
+        endPanel.DisplayEndPanel(LastPlayer());
+        //Display scoreboard
+        //Display button for lobby/replay
+        Debug.Log("Game ended");
+    }
+
+    private string LastPlayer()
+    {
+        string pName = "";
+
+        foreach (Player p in localPlayers)
+        {
+            if (p.lives > 0)
+            {
+                pName = p.playerName;
+            }
+        }
+
+        return pName;
     }
 
     IEnumerator RespawnCountdown (GameObject playerObject)
@@ -188,5 +247,19 @@ public class ServerController : MonoBehaviour {
         {
             killsText[i].text = localPlayers[i].kills.ToString();
         }
-    } 
+    }
+
+
+    public void AsteroidSpawn()
+    {
+        for (int i = 0; i < Random.Range(4, 9); i++)
+        {
+            var asteroid = Instantiate(asteroidPrefab, Vector3.zero, Quaternion.identity);
+            asteroid.transform.position += new Vector3(0, 0, 800);
+            asteroid.transform.RotateAround(Vector3.zero, transform.up, Random.Range(0, 359.0f));
+            asteroid.transform.forward = -asteroid.transform.position;
+            asteroid.transform.Rotate(new Vector3(0, Random.Range(-30, 30), 0), Space.Self);
+            asteroid.GetComponent<Rigidbody>().velocity = asteroid.transform.forward * 100.0f * Random.Range(0.75f, 1.0f);
+        }
+    }
 }
