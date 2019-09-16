@@ -7,9 +7,9 @@ using UnityEngine.Networking;
 using System;
 using Random = UnityEngine.Random;
 
-public class ServerController : MonoBehaviour {
+public class GameController : MonoBehaviour {
 
-    public static ServerController instance;
+    public static GameController instance;
 
     public EndPanelController endPanel;
 

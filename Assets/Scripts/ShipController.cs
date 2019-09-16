@@ -104,13 +104,13 @@ public class ShipController : MonoBehaviour {
     public void TakeDamage (int amount, GameObject owner)
     {
         currentHealth -= amount;
-        ServerController.instance.AddDamageStats(owner, amount);
+        GameController.instance.AddDamageStats(owner, amount);
         if (currentHealth <= 0)
         {
-            var explosion = Instantiate(ServerController.instance.explosionParticle, transform.position, transform.rotation);
+            var explosion = Instantiate(GameController.instance.explosionParticle, transform.position, transform.rotation);
             Destroy(explosion, 2.0f);
-            ServerController.instance.AddKill(owner);
-            ServerController.instance.Respawn(gameObject);
+            GameController.instance.AddKill(owner);
+            GameController.instance.Respawn(gameObject);
         }
     }
     
@@ -119,9 +119,9 @@ public class ShipController : MonoBehaviour {
         currentHealth -= amount;
         if (currentHealth <= 0)
         {
-            var explosion = Instantiate(ServerController.instance.explosionParticle, transform.position, transform.rotation);
+            var explosion = Instantiate(GameController.instance.explosionParticle, transform.position, transform.rotation);
             Destroy(explosion, 2.0f);
-            ServerController.instance.Respawn(gameObject);
+            GameController.instance.Respawn(gameObject);
         }
     }
 
