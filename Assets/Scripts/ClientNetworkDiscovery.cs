@@ -5,9 +5,17 @@ using UnityEngine.Networking;
 
 public class ClientNetworkDiscovery : NetworkDiscovery {
 
+    bool connected;
+
     public override void OnReceivedBroadcast(string fromAddress, string data)
     {
-        MobileController.instance.Connect(fromAddress, broadcastPort, data);
+        if (!connected)
+            connected = MobileController.instance.Connect(fromAddress, broadcastPort, data);
+    }
+
+    public void OnDisconnect ()
+    {
+        connected = false;
     }
 
 }

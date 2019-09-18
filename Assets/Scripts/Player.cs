@@ -5,7 +5,7 @@ using UnityEngine;
 public class Player {
 
     public string playerName;
-    public Color shipColor;
+    public Color playerColor;
     public GameObject playerShip;
     public GameObject playerLives;
     public int lives;
@@ -13,6 +13,7 @@ public class Player {
     public int score;
     public int damageDealt;
     public int damageTaken;
+    public int connectionId;
 
     public int SubtractLife ()
     {

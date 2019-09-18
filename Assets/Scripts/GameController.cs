@@ -17,8 +17,9 @@ public class GameController : MonoBehaviour {
     public Dictionary<int, ShipController> shipControllers = new Dictionary<int, ShipController>();
     public List<Transform> spawns;
     public List<Color> playersColors;
-    public List<Player> localPlayers = new List<Player>();
-    public Dictionary<int, Player> networkPlayers = new Dictionary<int, Player>();
+
+    public List<Player> localPlayers; //do wywalenia
+    public Dictionary<int, Player> networkPlayers; //do wywalenia
 
     public List<GameObject> playersUISets = new List<GameObject>();
     public List<Text> killsText = new List<Text>();
@@ -27,17 +28,13 @@ public class GameController : MonoBehaviour {
 
     public GameObject explosionParticle, hitParticle;
 
-    private void OnGUI()
-    {
-        string ipAddress = Network.player.ipAddress;
-        GUI.Box(new Rect(10, Screen.height - 50, 100, 50), ipAddress);
-        GUI.Label(new Rect(20, Screen.height - 35, 100, 20), "Status: " + NetworkServer.active);
-        GUI.Label(new Rect(20, Screen.height - 20, 100, 20), "Connected: " + (NetworkServer.connections.Count - 1));
-    }
-
     private void Awake()
     {
         instance = this;
+        endPanel.gameObject.SetActive(false);
+        localPlayers = ServerManager.instance.localPlayers;
+        networkPlayers = ServerManager.instance.networkPlayers;
+
         foreach (GameObject set in playersUISets)
         {
             set.SetActive(false);
@@ -46,62 +43,32 @@ public class GameController : MonoBehaviour {
 
     void Start()
     {
-        NetworkServer.Listen(25000);
+        CreatePlayerShips();
         NetworkServer.RegisterHandler(MsgType.Highest + 1, ServerRecieveMovementVector);
         NetworkServer.RegisterHandler(MsgType.Highest + 2, ServerRecieveShootingVector);
-        NetworkServer.RegisterHandler(MsgType.Connect, OnConnected);
-        NetworkServer.RegisterHandler(MsgType.Disconnect, OnDisconnected);
-        NetworkServer.RegisterHandler(MsgType.Error, OnError);
 
         Time.timeScale = 0.0f;
 
         InvokeRepeating("AsteroidSpawn", 0.0f, 15.0f);
-    }
-
-    public void OnConnected(NetworkMessage netMsg)
-    {
-        Player newPlayer = new Player();
-        var newShip = Instantiate(ship, spawns[networkPlayers.Count].position, Quaternion.identity);
-        newPlayer.lives = 3;
-        newPlayer.playerName = "Player " + (networkPlayers.Count + 1);
-        newPlayer.playerShip = newShip;
-        newPlayer.playerLives = playersUISets[networkPlayers.Count].transform.Find("Lives").gameObject;
-
-        Color playerColor = playersColors[networkPlayers.Count];
-
-        ShipController shipController = newShip.GetComponent<ShipController>();
-        shipController.enabled = false;
-        shipController.shipColor = playerColor;
-        shipController.SetColor();
-        playersUISets[networkPlayers.Count].SetActive(true);
-        StringMessage msg = new StringMessage
-        {
-            value = playerColor.r.ToString() + '|' + playerColor.g.ToString() + '|' + playerColor.b.ToString()
-        };
-        Debug.Log("Color string:  " + msg.value);
-        NetworkServer.SendToClient(netMsg.conn.connectionId, MsgType.Highest + 1, msg);
-
-        networkPlayers.Add(netMsg.conn.connectionId, newPlayer);
-
-        localPlayers.Add(newPlayer);
-
-        shipControllers.Add(netMsg.conn.connectionId, shipController);
-        
-        Debug.Log("Client Connected");
-        if (networkPlayers.Count == 4)
-            NetworkServer.dontListen = true;
-        if (networkPlayers.Count == 1)
         StartCoroutine(StartGameCountdown());
     }
 
-    public void OnDisconnected(NetworkMessage netMsg)
+    private void CreatePlayerShips()
     {
-        Debug.Log("Disconnected");
-    }
-
-    public void OnError(NetworkMessage netMsg)
-    {
-        Debug.Log("Error while connecting");
+        for (int i = 0; i < localPlayers.Count; i++)
+        {
+            Player p = localPlayers[i];
+            p.lives = 1;
+            var newShip = Instantiate(ship, spawns[i].position, Quaternion.identity);
+            p.playerShip = newShip;
+            p.playerLives = playersUISets[i];
+            ShipController shipController = newShip.GetComponent<ShipController>();
+            shipController.enabled = false;
+            shipController.shipColor = p.playerColor;
+            shipController.SetColor();
+            playersUISets[i].SetActive(true);
+            shipControllers.Add(p.connectionId, shipController);
+        }
     }
 
     private void ServerRecieveMovementVector(NetworkMessage message)
@@ -145,16 +112,18 @@ public class GameController : MonoBehaviour {
         playerObject.SetActive(false);
         if (localPlayers.Find(p => p.playerShip == playerObject).SubtractLife() > 0)
         {
-            if (CheckPlayerLives())
-            {
-                StartCoroutine(RespawnCountdown(playerObject));
-            } else
-            {
-                EndGame();
-            }
         }
         else
             Debug.Log("Game over for " + playerObject.name);
+
+        if (CheckPlayerLives())
+        {
+            StartCoroutine(RespawnCountdown(playerObject));
+        }
+        else
+        {
+            EndGame();
+        }
     }
 
     public bool CheckPlayerLives ()
@@ -165,6 +134,7 @@ public class GameController : MonoBehaviour {
             if (p.lives > 0)
                 playersAlive++;
         }
+
         if (playersAlive > 1)
         {
             return true;
@@ -177,11 +147,13 @@ public class GameController : MonoBehaviour {
     public void EndGame ()
     {
         StopAllCoroutines();
+        NetworkServer.SendToAll(MsgType.Highest + 5, new EmptyMessage());
         //Display which player won
         endPanel.DisplayEndPanel(LastPlayer());
         //Display scoreboard
         //Display button for lobby/replay
         Debug.Log("Game ended");
+        Time.timeScale = 0.0f;
     }
 
     private string LastPlayer()
@@ -218,17 +190,16 @@ public class GameController : MonoBehaviour {
             counter--;
             countdownText.text = counter.ToString();
         }
-        Time.timeScale = 1.0f;
         countdownText.text = "GO!";
         yield return WaitForUnscaledSeconds(0.5f);
         countdownText.gameObject.SetActive(false);
-
-        NetworkServer.dontListen = true;
-
+        
         foreach (ShipController controller in shipControllers.Values)
         {
             controller.enabled = true;
         }
+
+        Time.timeScale = 1.0f;
     }
 
     IEnumerator WaitForUnscaledSeconds(float dur)

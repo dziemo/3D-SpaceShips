@@ -8,7 +8,7 @@ public class ShipController : MonoBehaviour {
     public Transform[] firePositions;
     public Color shipColor;
 
-    public int maxHealth = 100, currentHealth, damage = 10;
+    public int maxHealth = 100, currentHealth, damage = 10, maxAmmo = 8;
 
     public float planeSpeed = 0.01f, bulletSpeed = 20.0f, fireRate = 0.3f, rotation = 60.0f, rotationSpeed = 0.075f;
 
@@ -149,7 +149,8 @@ public class ShipController : MonoBehaviour {
         int[] vals = new int[] { 1, -1 };
         disableRotDir = vals[Random.Range(0, 2)];
         rb.velocity = Vector3.zero;
-        rb.AddForce((transform.position - coll.gameObject.transform.position).normalized * 60.0f, ForceMode.VelocityChange);
+        if (coll)
+            rb.AddForce((transform.position - coll.gameObject.transform.position).normalized * 60.0f, ForceMode.VelocityChange);
     }
 
     private void OnCollisionEnter(Collision collision)

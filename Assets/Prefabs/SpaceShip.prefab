@@ -1465,7 +1465,9 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 0
   damage: 10
-  planeSpeed: 75
+  maxAmmo: 8
+  planeSpeed: 90
   bulletSpeed: 800
   fireRate: 0.2
   rotation: 60
+  rotationSpeed: 0.075
