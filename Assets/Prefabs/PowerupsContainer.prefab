@@ -19,8 +19,9 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4697739802320396}
+  - component: {fileID: 114658737039300706}
   m_Layer: 0
-  m_Name: Shield
+  m_Name: Drone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -183,6 +184,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bombPrefab: {fileID: 1959671079073366, guid: e83fec14bfb36dc449828fa80c420c6f, type: 2}
+--- !u!114 &114658737039300706
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1237639831734764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fece2fa085a0b14eb44f069d10e676b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dronePrefab: {fileID: 1581299825918258, guid: 887216a7705c6524091d4ad2687b658a,
+    type: 2}
 --- !u!114 &114810968198119362
 MonoBehaviour:
   m_ObjectHideFlags: 1

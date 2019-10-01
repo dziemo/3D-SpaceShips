@@ -22,8 +22,9 @@ GameObject:
   - component: {fileID: 33796697504431648}
   - component: {fileID: 23366979679019232}
   - component: {fileID: 65537511119778016}
+  - component: {fileID: 114843305326929816}
   m_Layer: 0
-  m_Name: ShieldPickup
+  m_Name: DronePickup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -86,7 +87,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 2f2b07900ec624c419f7bae8cc4db5ac, type: 2}
+  - {fileID: 2100000, guid: 08f8f938fc8efcb44b442d063d911c8c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -125,6 +126,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2, y: 20, z: 2}
   m_Center: {x: 0, y: 10, z: 0}
+--- !u!114 &114843305326929816
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1129932947807406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29ced920032032c4a82ca221d9b82934, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PowerupName: Drone
+  Powerup: {fileID: 114658737039300706, guid: a36b8f710a1ac3543baf1af0c69b9bfb, type: 2}
 --- !u!212 &212322878947346682
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -159,7 +173,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: f9a47fe0f842643439ed25feab2b4bd8, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3ee40498029334e4f984300f55abf54c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

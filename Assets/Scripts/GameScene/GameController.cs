@@ -260,6 +260,6 @@ public class GameController : MonoBehaviour {
 
     public void PowerupSpawn()
     {
-        var powerup = Instantiate(powerUps[Random.Range(0, powerUps.Count)], new Vector3 (Random.Range(-400, 401), 0, Random.Range(-250, 251)), Quaternion.identity);
+        var powerup = Instantiate(powerUps[Random.Range(0, powerUps.Count)], new Vector3 (Random.Range(-400, 401), -10, Random.Range(-250, 251)), Quaternion.identity);
     }
 }
