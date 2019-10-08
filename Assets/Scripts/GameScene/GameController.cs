@@ -29,9 +29,7 @@ public class GameController : MonoBehaviour {
     public List<Text> killsText = new List<Text>();
 
     public Text countdownText;
-
-    public GameObject explosionParticle, hitParticle;
-
+    
     private void Awake()
     {
         if (!ServerManager.instance)

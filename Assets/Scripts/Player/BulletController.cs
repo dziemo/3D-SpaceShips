@@ -22,13 +22,15 @@ public class BulletController : MonoBehaviour {
         {
             if (coll != owner)
             {
-                coll.GetComponent<ShipController>().TakeDamage(damage, owner);
-                var hit = Instantiate(GameController.instance.hitParticle, transform.position, transform.rotation);
+                var hit = Instantiate(ParticlesContainer.instance.bulletImpact, transform.position, transform.rotation);
                 Destroy(hit, hit.GetComponent<ParticleSystem>().main.startLifetime.constant);
                 Destroy(gameObject);
+                coll.GetComponent<ShipController>().TakeDamage(damage, owner);
             }
         } else if (coll.tag =="Asteroid")
         {
+            var hit = Instantiate(ParticlesContainer.instance.bulletImpact, transform.position, transform.rotation);
+            Destroy(hit, hit.GetComponent<ParticleSystem>().main.startLifetime.constant);
             coll.GetComponent<AsteroidController>().hitPoints--;
             Destroy(gameObject);
         }

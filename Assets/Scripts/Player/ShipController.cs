@@ -142,7 +142,7 @@ public class ShipController : MonoBehaviour {
         GameController.instance.AddDamageStats(owner, amount);
         if (currentHealth <= 0)
         {
-            var explosion = Instantiate(GameController.instance.explosionParticle, transform.position, transform.rotation);
+            var explosion = Instantiate(ParticlesContainer.instance.shipExplosion, transform.position, transform.rotation);
             Destroy(explosion, 2.0f);
             GameController.instance.AddKill(owner);
             GameController.instance.Respawn(gameObject);
@@ -154,7 +154,8 @@ public class ShipController : MonoBehaviour {
         currentHealth -= amount;
         if (currentHealth <= 0)
         {
-            var explosion = Instantiate(GameController.instance.explosionParticle, transform.position, transform.rotation);
+            Camera.main.GetComponent<ShakeableTransform>().InduceStress(1.0f);
+            var explosion = Instantiate(ParticlesContainer.instance.shipExplosion, transform.position, transform.rotation);
             Destroy(explosion, 2.0f);
             GameController.instance.Respawn(gameObject);
         }

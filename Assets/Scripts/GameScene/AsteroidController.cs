@@ -28,6 +28,8 @@ public class AsteroidController : MonoBehaviour {
 
         if (hitPoints <= 0)
         {
+            var particle = Instantiate(ParticlesContainer.instance.asteroidDestroy, transform.position, Quaternion.identity);
+            Destroy(particle, 2.0f);
             Destroy(gameObject);
         }
     }
@@ -39,6 +41,8 @@ public class AsteroidController : MonoBehaviour {
             ShipController shipController = collision.gameObject.GetComponent<ShipController>();
             shipController.DisableShip(gameObject, 1.0f);
             shipController.TakeDamage(10);
+            var particle = Instantiate(ParticlesContainer.instance.asteroidDestroy, transform.position, Quaternion.identity);
+            Destroy(particle, 2.0f);
             Destroy(gameObject);
         }
     }

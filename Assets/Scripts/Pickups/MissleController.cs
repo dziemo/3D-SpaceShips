@@ -36,6 +36,8 @@ public class MissleController : MonoBehaviour {
 
     public void Explode()
     {
+        Camera.main.GetComponent<ShakeableTransform>().InduceStress(0.8f);
+
         Collider[] colls = Physics.OverlapSphere(transform.position, 100.0f);
         foreach (Collider c in colls)
         {
