@@ -15,6 +15,8 @@ public class GameController : MonoBehaviour {
     public EndPanelController endPanel;
 
     public GameObject ship;
+    public List<GameObject> playerIntefaces = new List<GameObject>();
+    public List<GameObject> playerPointers = new List<GameObject>();
     public Dictionary<int, ShipController> shipControllers = new Dictionary<int, ShipController>();
     public List<Transform> spawns;
     public List<Color> playersColors;
@@ -45,6 +47,10 @@ public class GameController : MonoBehaviour {
         foreach (GameObject set in playersUISets)
         {
             set.SetActive(false);
+        }
+        foreach (GameObject i in playerIntefaces)
+        {
+            i.SetActive(false);
         }
     }
 
@@ -78,6 +84,8 @@ public class GameController : MonoBehaviour {
             shipController.SetColor();
             playersUISets[i].SetActive(true);
             shipControllers.Add(p.connectionId, shipController);
+            playerIntefaces[i].GetComponent<PlayerGameInterface>().SetShipController(shipController);
+            playerPointers[i].GetComponent<PlayerPointer>().SetTarget(shipController);
         }
     }
 

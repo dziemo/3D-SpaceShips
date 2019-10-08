@@ -170,6 +170,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b27d42fe0769c1a408255d8dc6430a3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  powerupSprite: {fileID: 21300000, guid: a4b2290e91965fa4cbfc77efc18cecd8, type: 3}
   misslePrefab: {fileID: 1613804888111214, guid: 2b5251409013d99448ff5d5584945388,
     type: 2}
 --- !u!114 &114409060902785550
@@ -183,6 +184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec0187f18af2364409d8b53ed28ebbc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  powerupSprite: {fileID: 21300000, guid: dfba42be23ce39349b8ea07c103b4237, type: 3}
   bombPrefab: {fileID: 1959671079073366, guid: e83fec14bfb36dc449828fa80c420c6f, type: 2}
 --- !u!114 &114658737039300706
 MonoBehaviour:
@@ -195,6 +197,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fece2fa085a0b14eb44f069d10e676b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  powerupSprite: {fileID: 21300000, guid: 3ee40498029334e4f984300f55abf54c, type: 3}
   dronePrefab: {fileID: 1581299825918258, guid: 887216a7705c6524091d4ad2687b658a,
     type: 2}
 --- !u!114 &114810968198119362
@@ -208,3 +211,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9d4626f13fe79b4d8d3a7bc1c865aa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  powerupSprite: {fileID: 21300000, guid: 499c0fa2955aac941914719db5ac8bbf, type: 3}
