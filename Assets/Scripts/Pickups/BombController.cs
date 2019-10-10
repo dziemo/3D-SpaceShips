@@ -36,15 +36,6 @@ public class BombController : MonoBehaviour {
             }
         }
 
-        var explosionSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        explosionSphere.transform.position = transform.position;
-        Destroy(explosionSphere.GetComponent<SphereCollider>());
-        Vector3 scale = explosionSphere.transform.localScale;
-        scale *= 200.0f;
-        explosionSphere.transform.localScale = scale;
-
-        Destroy(explosionSphere, 0.25f);
-
         Destroy(gameObject);
     }
 }

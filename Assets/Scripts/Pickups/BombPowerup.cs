@@ -12,7 +12,7 @@ public class BombPowerup : Powerup {
         var bomb = Instantiate(bombPrefab, owner.transform.position, owner.transform.rotation);
         bomb.GetComponent<BombController>().owner = owner;
         bomb.GetComponent<BombController>().SetColor();
-        Destroy(particles, 6.0f);
+        Destroy(particles, 3.0f);
     }
 
 }

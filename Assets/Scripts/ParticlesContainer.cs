@@ -6,7 +6,7 @@ public class ParticlesContainer : MonoBehaviour {
 
     public static ParticlesContainer instance;
 
-    public GameObject bombExplosion, shipExplosion, asteroidDestroy, bulletImpact;
+    public GameObject bombExplosion, shipExplosion, asteroidDestroy, bulletImpact, missleExplosion;
 
     private void Awake()
     {
