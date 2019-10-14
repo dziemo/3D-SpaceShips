@@ -29,7 +29,7 @@ public class MissleController : MonoBehaviour {
 
     public void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject != owner && other.transform.root.gameObject.tag != "Pickup")
+        if (other.gameObject != owner && !other.transform.gameObject.CompareTag("Pickup"))
             Explode();
     }
 
@@ -39,16 +39,16 @@ public class MissleController : MonoBehaviour {
         Destroy(Instantiate(ParticlesContainer.instance.missleExplosion, transform.position, Quaternion.identity), 3.0f);
         Camera.main.GetComponent<ShakeableTransform>().InduceStress(0.8f);
 
-        Collider[] colls = Physics.OverlapSphere(transform.position, 100.0f);
+        Collider[] colls = Physics.OverlapSphere(transform.position, 50.0f);
         foreach (Collider c in colls)
         {
-            GameObject go = c.gameObject.transform.root.gameObject;
+            GameObject go = c.gameObject.transform.gameObject;
 
-            if (go.tag == "Player" && go != owner)
+            if (go.CompareTag("Player") && go != owner)
             {
                 go.GetComponent<ShipController>().TakeDamage(50, owner);
             }
-            else if (go.tag == "Asteroid")
+            else if (go.CompareTag("Asteroid"))
             {
                 go.GetComponent<AsteroidController>().hitPoints = 0;
             }

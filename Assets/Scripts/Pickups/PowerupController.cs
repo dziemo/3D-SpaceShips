@@ -9,7 +9,7 @@ public class PowerupController : MonoBehaviour {
 
     private void OnTriggerEnter(Collider coll)
     {
-        GameObject go = coll.transform.root.gameObject;
+        GameObject go = coll.transform.gameObject;
         if (go.CompareTag("Player"))
         {  
             if (AddPowerupToPlayer(go))

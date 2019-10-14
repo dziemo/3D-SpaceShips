@@ -16,9 +16,9 @@ public class BulletController : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other)
     {
-        GameObject coll = other.transform.root.gameObject;
+        GameObject coll = other.transform.gameObject;
 
-        if (coll.tag == "Player")
+        if (coll.CompareTag("Player"))
         {
             if (coll != owner)
             {
@@ -27,7 +27,7 @@ public class BulletController : MonoBehaviour {
                 Destroy(gameObject);
                 coll.GetComponent<ShipController>().TakeDamage(damage, owner);
             }
-        } else if (coll.tag =="Asteroid")
+        } else if (coll.CompareTag("Asteroid"))
         {
             var hit = Instantiate(ParticlesContainer.instance.bulletImpact, transform.position, transform.rotation);
             Destroy(hit, hit.GetComponent<ParticleSystem>().main.startLifetime.constant);

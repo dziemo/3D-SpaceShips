@@ -25,12 +25,12 @@ public class BombController : MonoBehaviour {
         Collider[] colls = Physics.OverlapSphere(transform.position, 100.0f);
         foreach (Collider c in colls)
         {
-            GameObject go = c.gameObject.transform.root.gameObject;
+            GameObject go = c.gameObject.transform.gameObject;
 
-            if (go.tag == "Player" && go != owner)
+            if (go.CompareTag("Player") && go != owner)
             {
                 go.GetComponent<ShipController>().TakeDamage(50, owner);
-            } else if (go.tag == "Asteroid")
+            } else if (go.CompareTag("Asteroid"))
             {
                 go.GetComponent<AsteroidController>().hitPoints = 0;
             }

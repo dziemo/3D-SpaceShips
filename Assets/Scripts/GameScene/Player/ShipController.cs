@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ShipController : MonoBehaviour {
 
-    public GameObject bulletPrefab;
+    public GameObject bulletPrefab, disabledParticles;
     public Transform[] firePositions;
     public Color shipColor;
     public Powerup currentPowerup;
@@ -35,6 +35,17 @@ public class ShipController : MonoBehaviour {
     private void Start()
     {
         SetColor();
+    }
+
+    private void Update()
+    {
+        if (disabled)
+        {
+            disabledParticles.SetActive(true);
+        } else
+        {
+            disabledParticles.SetActive(false);
+        }
     }
 
     private void FixedUpdate()
@@ -191,7 +202,7 @@ public class ShipController : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.transform.root.tag == "Player")
+        if (collision.gameObject.transform.CompareTag("Player"))
         {
             if (!disabled)
             {

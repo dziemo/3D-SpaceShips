@@ -36,7 +36,7 @@ public class AsteroidController : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.transform.root.tag == "Player")
+        if (collision.transform.CompareTag("Player"))
         {
             ShipController shipController = collision.gameObject.GetComponent<ShipController>();
             shipController.DisableShip(gameObject, 1.0f);

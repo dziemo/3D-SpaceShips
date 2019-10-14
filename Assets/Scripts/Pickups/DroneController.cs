@@ -35,9 +35,9 @@ public class DroneController : MonoBehaviour {
         {
             foreach (Collider c in colls)
             {
-                GameObject go = c.gameObject.transform.root.gameObject;
+                GameObject go = c.gameObject.transform.gameObject;
 
-                if (go.tag == "Player" && go != owner && Vector3.Distance(owner.transform.position, go.transform.position) < Vector3.Distance(owner.transform.position, shootTowards))
+                if (go.CompareTag("Player") && go != owner && Vector3.Distance(owner.transform.position, go.transform.position) < Vector3.Distance(owner.transform.position, shootTowards))
                 {
                     shootTowards = go.transform.position;
                 }
@@ -66,9 +66,9 @@ public class DroneController : MonoBehaviour {
         bulletController.SetColor(controller.shipColor);
         bulletController.damage = controller.damage;
         projectile.GetComponent<TrailRenderer>().time = 0.15f;
-        projectile.GetComponent<Rigidbody>().AddForce(projectile.transform.forward * controller.bulletSpeed / 4, ForceMode.VelocityChange);
+        projectile.GetComponent<Rigidbody>().AddForce(projectile.transform.forward * controller.bulletSpeed / 2, ForceMode.VelocityChange);
         Destroy(projectile, 5.0f);
-        lastShot = 1.5f;
+        lastShot = 1.0f;
     }
 
 }

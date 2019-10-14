@@ -15,6 +15,8 @@ public class GameController : MonoBehaviour {
     public EndPanelController endPanel;
 
     public GameObject ship;
+    public GameObject playersParent;
+    public Transform cameraRig;
     public List<GameObject> playerIntefaces = new List<GameObject>();
     public List<GameObject> playerPointers = new List<GameObject>();
     public Dictionary<int, ShipController> shipControllers = new Dictionary<int, ShipController>();
@@ -29,7 +31,9 @@ public class GameController : MonoBehaviour {
     public List<Text> killsText = new List<Text>();
 
     public Text countdownText;
-    
+
+    Camera cam;
+
     private void Awake()
     {
         if (!ServerManager.instance)
@@ -50,6 +54,8 @@ public class GameController : MonoBehaviour {
         {
             i.SetActive(false);
         }
+
+        cam = Camera.main;
     }
 
     void Start()
@@ -65,6 +71,20 @@ public class GameController : MonoBehaviour {
         InvokeRepeating("AsteroidSpawn", 0.0f, 15.0f);
         InvokeRepeating("PowerupSpawn", 6.0f, 5.0f);
         StartCoroutine(StartGameCountdown());
+    }
+
+    private void Update()
+    {
+        Vector3 center = Vector3.zero;
+
+        for (int i = 0; i < shipControllers.Count; i++) { center += playersParent.transform.GetChild(i).position; }
+
+        center /= shipControllers.Count;
+
+        float cameraRotationX = 90 - (center.z / 50.0f);
+        cameraRotationX = Mathf.Clamp(cameraRotationX, 85.0f, 95.0f);
+
+        cameraRig.eulerAngles = Vector3.Lerp(cameraRig.eulerAngles, new Vector3(cameraRotationX, 0.0f, 0.0f), Time.deltaTime * 1.5f);
     }
 
     private void CreatePlayerShips()
@@ -84,6 +104,7 @@ public class GameController : MonoBehaviour {
             shipControllers.Add(p.connectionId, shipController);
             playerIntefaces[i].GetComponent<PlayerGameInterface>().SetShipController(shipController);
             playerPointers[i].GetComponent<PlayerPointer>().SetTarget(shipController);
+            newShip.transform.SetParent(playersParent.transform);
         }
     }
 
