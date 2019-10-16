@@ -7,13 +7,16 @@ public class PlayerPointer : MonoBehaviour {
 
     public Transform target;
     public Color playerColor;
+    public Text countdownText;
+
+    public int outOfBoundsMaxTime = 3;
 
     Camera cam;
-
-    bool insideCamera;
+    bool insideCamera, outOfBoundsCounting;
 
     private void Start()
     {
+        outOfBoundsCounting = false;
         cam = Camera.main;
     }
 
@@ -36,12 +39,24 @@ public class PlayerPointer : MonoBehaviour {
                 {
                     t.gameObject.SetActive(false);
                 }
+
+                if (outOfBoundsCounting)
+                {
+                    outOfBoundsCounting = false;
+                    StopAllCoroutines();
+                }
             }
             else
             {
                 foreach (Transform t in transform)
                 {
                     t.gameObject.SetActive(true);
+                }
+
+                if (!outOfBoundsCounting)
+                {
+                    outOfBoundsCounting = true;
+                    StartCoroutine(OutOfBoundsCountdown(outOfBoundsMaxTime));
                 }
             }
 
@@ -58,7 +73,19 @@ public class PlayerPointer : MonoBehaviour {
         playerColor = controller.shipColor;
         foreach(Transform t in transform)
         {
-            t.gameObject.GetComponent<Image>().color = playerColor;
+            if (t.name.Contains("Sprite"))
+                t.gameObject.GetComponent<Image>().color = playerColor;
         }
+    }
+
+    IEnumerator OutOfBoundsCountdown (int time)
+    {
+        for (int i = 0; i <= time; i++)
+        {
+            countdownText.text = (time - i).ToString();
+            yield return new WaitForSeconds(1.0f);
+        }
+
+        target.gameObject.GetComponent<ShipController>().TakeDamage(999);
     }
 }

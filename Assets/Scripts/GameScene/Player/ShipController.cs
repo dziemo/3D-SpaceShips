@@ -8,7 +8,7 @@ public class ShipController : MonoBehaviour {
     public Transform[] firePositions;
     public Color shipColor;
     public Powerup currentPowerup;
-
+    public GameObject playerInterface;
     public int maxHealth = 100, currentHealth, damage = 10, maxAmmo = 8;
 
     public float planeSpeed = 0.01f, bulletSpeed = 20.0f, fireRate = 0.3f, fireRateMultiplier = 1.0f,

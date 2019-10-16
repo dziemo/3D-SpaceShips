@@ -15,6 +15,7 @@ public class PlayerGameInterface : MonoBehaviour {
         gameObject.SetActive(true);
         shipController = controller;
         healthImage.color = shipController.shipColor;
+        shipController.playerInterface = gameObject;
     }
 
     private void Update()
