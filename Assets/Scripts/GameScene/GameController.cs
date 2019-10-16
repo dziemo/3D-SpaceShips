@@ -81,10 +81,10 @@ public class GameController : MonoBehaviour {
 
         center /= shipControllers.Count;
 
-        float cameraRotationX = 90 - (center.z / 50.0f);
+        float cameraRotationX = 90.0f - (center.z / 50.0f);
         cameraRotationX = Mathf.Clamp(cameraRotationX, 85.0f, 95.0f);
 
-        cameraRig.eulerAngles = Vector3.Lerp(cameraRig.eulerAngles, new Vector3(cameraRotationX, 0.0f, 0.0f), Time.deltaTime * 1.5f);
+        cameraRig.rotation = Quaternion.Lerp(cameraRig.rotation, Quaternion.Euler(new Vector3(cameraRotationX, 0.0f, 0.0f)), Time.deltaTime * 1.5f);
     }
 
     private void CreatePlayerShips()
