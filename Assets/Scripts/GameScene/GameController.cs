@@ -226,9 +226,10 @@ public class GameController : MonoBehaviour {
     {
         yield return new WaitForSeconds(3.0f);
         playerObject.transform.position = spawns[Random.Range(0, 4)].transform.position;
-        playerObject.GetComponent<ShipController>().ResetShip();
+        ShipController controller = playerObject.GetComponent<ShipController>();
+        controller.ResetShip();
         playerObject.SetActive(true);
-        playerObject.GetComponent<ShipController>().playerInterface.SetActive(true);
+        controller.playerInterface.SetActive(true);
     }
 
     IEnumerator StartGameCountdown ()

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class PlayerGameInterface : MonoBehaviour {
 
     public GameObject powerupIcon;
-    public Image healthImage, boostImage, powerupImage;
+    public Image healthImage, boostImage, powerupImage, powerupBackground;
 
     ShipController shipController;
 
@@ -15,6 +15,7 @@ public class PlayerGameInterface : MonoBehaviour {
         gameObject.SetActive(true);
         shipController = controller;
         healthImage.color = shipController.shipColor;
+        powerupBackground.color = shipController.shipColor;
         shipController.playerInterface = gameObject;
     }
 

@@ -1412,7 +1412,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -702299959
+  randomSeed: -2043999286
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -1505,7 +1505,7 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 1, g: 1, b: 1, a: 1}
+        key0: {r: 0.33455884, g: 0.6960952, b: 0.875, a: 1}
         key1: {r: 1, g: 0.9695741, b: 0.5588235, a: 1}
         key2: {r: 1, g: 0.9372332, b: 0.35250884, a: 0}
         key3: {r: 0.8897059, g: 0.431769, b: 0.431769, a: 0}
@@ -5147,6 +5147,11 @@ MonoBehaviour:
   - {fileID: 1129932947807406, guid: 21b401c8ec7ad8b4ea3503dd483ea456, type: 2}
   asteroidPrefabs:
   - {fileID: 1062657541349416, guid: 788690cfb51fe3d4983b34c1d19624b6, type: 2}
+  - {fileID: 1737909489845472, guid: 958402aa75c641e47a64b1ccbce5c8c8, type: 2}
+  - {fileID: 1238792008713356, guid: 4ccb0e8e2c2ec1147ac66dfa6d5d774c, type: 2}
+  - {fileID: 1544423498052014, guid: df7c0bf9a96a24f46a49c17cb662cc66, type: 2}
+  - {fileID: 1309513437795408, guid: e205b66800b323d4cb50119821895195, type: 2}
+  - {fileID: 1479661388773502, guid: e991ae62548d6eb4fbccb996193c38cd, type: 2}
   playersUISets:
   - {fileID: 2141275842}
   - {fileID: 1893822438}

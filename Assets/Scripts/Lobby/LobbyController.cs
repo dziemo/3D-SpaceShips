@@ -48,6 +48,10 @@ public class LobbyController : MonoBehaviour {
     {
         LobbyPlayerInfo info = playersInfo[index];
         info.gameObject.SetActive(false);
+        info.playerName.text = name;
+        info.playerColor.color = Color.white;
+        playersPlaceholders[index].SetActive(true);
+        SetColor(Color.grey, lobbySpaceship[index]);
     }
 
     public void SetColor(Color color, GameObject ship)

@@ -14,6 +14,7 @@ public class ServerManager : MonoBehaviour {
     public List<Color> playersColors;
 
     NetworkDiscovery discovery;
+    bool[] playerSlots = new bool[4];
 
     private void OnGUI()
     {
@@ -60,25 +61,35 @@ public class ServerManager : MonoBehaviour {
     
     public void OnConnected(NetworkMessage netMsg)
     {
+        int index = GetFirstOpenSlot();
+
         Player newPlayer = new Player
         {
-            playerName = "Player " + (networkPlayers.Count + 1),
-            playerColor = playersColors[networkPlayers.Count],
+            playerName = "Player " + (index + 1),
+            playerColor = playersColors[index],
             connectionId = netMsg.conn.connectionId
         };
         localPlayers.Add(newPlayer);
-        networkPlayers.Add(netMsg.conn.connectionId, localPlayers[localPlayers.Count - 1]);
-        LobbyController.instance.AddPlayer(localPlayers.Count - 1, newPlayer.playerName, newPlayer.playerColor);
+        networkPlayers.Add(netMsg.conn.connectionId, localPlayers[index]);
+        LobbyController.instance.AddPlayer(index, newPlayer.playerName, newPlayer.playerColor);
         StringMessage msg = new StringMessage
         {
             value = newPlayer.playerColor.r.ToString() + '|' + newPlayer.playerColor.g.ToString() + '|' + newPlayer.playerColor.b.ToString()
         };
         NetworkServer.SendToClient(netMsg.conn.connectionId, MsgType.Highest + 1, msg);
+        playerSlots[index] = true;
     }
 
     public void OnDisconnected(NetworkMessage netMsg)
     {
-        Debug.Log("Disconnected");
+        if (SceneManager.GetActiveScene().name == "Lobby")
+        {
+            int localIndex = localPlayers.FindIndex(p => p.connectionId == netMsg.conn.connectionId);
+            LobbyController.instance.RemovePlayer(localIndex);
+            playerSlots[localIndex] = false;
+            localPlayers.Remove(localPlayers.Find(p => p.connectionId == netMsg.conn.connectionId));
+            networkPlayers.Remove(netMsg.conn.connectionId);
+        }
     }
 
     public void OnError(NetworkMessage netMsg)
@@ -105,5 +116,16 @@ public class ServerManager : MonoBehaviour {
     {
         NetworkServer.SendToAll(MsgType.Highest + 3, new EmptyMessage());
         SceneManager.LoadScene("Game");
+    }
+
+    int GetFirstOpenSlot ()
+    {
+        for (int i = 0; i < playerSlots.Length; i++)
+        {
+            if (!playerSlots[i])
+                return i;
+        }
+
+        return -1;
     }
 }

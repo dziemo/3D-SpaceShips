@@ -187,6 +187,7 @@ public class ShipController : MonoBehaviour {
         currentHealth = maxHealth;
         movDir = -transform.position;
         transform.forward = -movDir;
+        disabled = false;
     }
 
     public void DisableShip (GameObject coll, float disableDuration)
