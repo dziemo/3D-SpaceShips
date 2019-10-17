@@ -14,6 +14,7 @@ public class MobileController : MonoBehaviour {
 
     public GameObject gamePanel, loadingPanel, lobby, endGame;
     public Text info;
+    public Image playerColor;
 
     static NetworkClient client;
 
@@ -86,6 +87,7 @@ public class MobileController : MonoBehaviour {
         lobby.SetActive(true);
         loadingPanel.SetActive(false);
         endGame.SetActive(false);
+        info.gameObject.SetActive(false);
     }
 
     private void OnDisconnected (NetworkMessage message)
@@ -98,6 +100,7 @@ public class MobileController : MonoBehaviour {
         lobby.SetActive(false);
         loadingPanel.SetActive(true);
         endGame.SetActive(false);
+        info.gameObject.SetActive(true);
         info.text = "Disconnected";
         Camera.main.backgroundColor = Color.gray;
     }
@@ -159,7 +162,7 @@ public class MobileController : MonoBehaviour {
         };
 
         string[] rgb = msg.value.Split('|');
-        
+        playerColor.color = new Color(Convert.ToSingle(rgb[0]), Convert.ToSingle(rgb[1]), Convert.ToSingle(rgb[2]));
         Camera.main.backgroundColor = new Color(Convert.ToSingle(rgb[0]), Convert.ToSingle(rgb[1]), Convert.ToSingle(rgb[2]));
     }
 

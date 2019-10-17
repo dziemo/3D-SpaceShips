@@ -25,8 +25,7 @@ namespace SimpleInputNamespace
 		[SerializeField]
 		private float movementAreaRadius = 75f;
 
-		[SerializeField]
-		private bool isDynamicJoystick = false;
+		public bool isDynamicJoystick = false;
 
 		[SerializeField]
 		private RectTransform dynamicJoystickMovementArea;
@@ -56,16 +55,18 @@ namespace SimpleInputNamespace
 				background.raycastTarget = false;
 			}
 
-			if( isDynamicJoystick )
-			{
-				opacity = 0f;
-				thumb.raycastTarget = false;
+            if (isDynamicJoystick)
+            {
+                opacity = 0f;
+                thumb.raycastTarget = false;
 
-				OnUpdate();
-			}
-			else
-				thumb.raycastTarget = true;
-
+                OnUpdate();
+            }
+            else
+            {
+                opacity = 1.0f;
+                thumb.raycastTarget = true;
+            }
 			_1OverMovementAreaRadius = 1f / movementAreaRadius;
 			movementAreaRadiusSqr = movementAreaRadius * movementAreaRadius;
 		}
@@ -192,5 +193,21 @@ namespace SimpleInputNamespace
 				background.color = c;
 			}
 		}
+
+        public void ToggleDynamicJoystick()
+        {
+            isDynamicJoystick = !isDynamicJoystick;
+
+            if (!isDynamicJoystick)
+            {
+                Color bg = background.color, th = thumb.color;
+                bg.a = 1.0f;
+                th.a = 1.0f;
+                background.color = bg;
+                thumb.color = th;
+            }
+        }
 	}
+
+
 }
